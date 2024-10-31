@@ -33,6 +33,7 @@ def psana_pull(
     # TODO: send to file_writer or something instead of len
     stats = puller(addr, ndial) >> stream.map(len) >> clock()
     # TODO: update tqdm progress meter
+    items = None
     for items in stats >> stream.item[1::10]:
         #print(items)
         print(f"At {items['count']}, {items['wait']} seconds: {items['size']/items['wait']/1024**2} MB/sec.")
@@ -41,7 +42,10 @@ def psana_pull(
     except IndexError:
         final = items
     # {'count': 0, 'size': 0, 'wait': 0, 'time': time.time()}
-    print(f"Received {final['count']} messages in {final['wait']} seconds: {final['size']/final['wait']/1024**2} MB/sec.")
+    if final:
+        print(f"Received {final['count']} messages in {final['wait']} seconds: {final['size']/final['wait']/1024**2} MB/sec.")
+    else:
+        print("Stream completed with no data.")
 
 def run():
     typer.run(psana_pull)
