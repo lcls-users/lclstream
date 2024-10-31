@@ -46,15 +46,15 @@ def file_push(
         addr: Annotated[str,
             typer.Argument(help="Address to dial/listen at (URL format)."),
         ],
-        listen: Annotated[
+        dial: Annotated[
             bool,
-            typer.Option("--listen", "-l", help="Act as server?"),
-        ] = True,
+            typer.Option("--dial", "-d", help="Dial-out to address?"),
+        ] = False,
     ):
 
-    ndial = 1
-    if listen:
-        ndial = 0
+    ndial = 0
+    if dial:
+        ndial = 1
 
     sz = name.stat().st_size
     sends = stream.Source([ (sz, b'') ])
