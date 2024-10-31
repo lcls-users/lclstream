@@ -6,9 +6,6 @@ from collections.abc import Iterable, Iterator
 
 import stream
 
-from pynng import Push0 # type: ignore[import-untyped]
-from pynng.exceptions import ConnectionRefused # type: ignore[import-untyped]
-
 import numpy as np
 import h5py # type: ignore[import-untyped]
 import hdf5plugin # type: ignore[import-untyped]
@@ -16,7 +13,8 @@ import typer
 
 from .models import ImageRetrievalMode, AccessMode
 from .psana_img_src import PsanaImgSrc
-from .nng import pusher, rate_clock, clock0
+from .nng import pusher
+from .stream_utils import clock
 
 """
 try:
@@ -86,8 +84,7 @@ def psana_push(
 
     messages = ps(mode) >> stream.chop(img_per_file) >> stream.map(Hdf5FileWriter) # iterator over hdf5 bytes
 
-    stats = messages >> pusher(addr, 1) \
-          >> stream.fold(rate_clock, clock0())
+    stats = messages >> pusher(addr, 1) >> clock()
     # TODO: update tqdm progress meter
     for items in stats >> stream.item[1::32]:
         print(f"At {items['count']} messages in {items['wait']} seconds: {items['size']/items['wait']/1024**2} MB/sec.")

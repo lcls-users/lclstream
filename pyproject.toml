@@ -19,10 +19,12 @@ file_pull = "lclstream.file_pull:run"
 python = "^3.9"
 pynng = "^0.8.0"
 numpy = "^1.20"
+pydantic = ">=2.1"
 typer = "^0.12.3"
 h5py = "^3.11.0"
 hdf5plugin = "^4.4.0"
 stream = {git = "https://github.com/frobnitzem/stream.py", rev = "v1.0.0"}
+tqdm = "^4.66.6"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"

@@ -2,17 +2,20 @@
 
 import time
 from typing import Annotated, Iterable, Optional
+from collections.abc import Iterable, Iterator
+from pathlib import Path
 #from asyncio import run as aiorun
 
 import stream
 from pynng import Pull0, Timeout # type: ignore[import-untyped]
 import typer
 
-from .nng import (
-    puller,
-    decode_offset, file_writer,
+from .nng import puller
+from .stream_utils import (
+    decode_offset,
+    file_writer,
     chunk_progress,
-    rate_clock, clock0
+    clock
 )
 
 def create_file(fname, sz):
@@ -25,38 +28,33 @@ def mkfile(chunks: Iterator[bytes], fname) -> Iterator[int]:
     first = next(chunks)
     sz, rem = decode_offset(first)
     assert len(rem) == 0, "Invalid first message (size required)."
+    print(sz)
     create_file(fname, sz)
     yield from (chunks
-                >> chunk_progress(sz)
+                >> chunk_progress(sz, desc="Downloading")
                 >> stream.map(decode_offset)
                 >> file_writer(fname, size=sz))
 
 def file_pull(
+        addr: Annotated[str,
+            typer.Argument(help="Address to dial/listen at (URL format)."),
+        ],
         out: Annotated[Path,
             typer.Argument(help="Output file."),
         ],
         listen: Annotated[
-            Optional[str],
-            typer.Option("--listen", "-l", help="Address to listen at (URL format)."),
-        ] = None,
-        dial: Annotated[
-            Optional[str],
-            typer.Option("--dial", "-d", help="Address to dial (URL format)."),
-        ] = None,
+            bool,
+            typer.Option("--listen", "-l", help="Listen instead of dial?"),
+        ] = False,
     ):
 
-    assert (dial is not None) or (listen is not None), "Need an address."
-    ndial = 0
-    if listen is None:
-        ndial = 1 # need to dial
-        addr = dial
-    else:
-        addr = listen
+    ndial = 1
+    if listen:
+        ndial = 0
 
-    clock = stream.fold(rate_clock, clock0())
     stats = puller(addr, ndial) \
             >> mkfile(out) \
-            >> clock
+            >> clock()
     #for items in stats >> stream.item[1::10]:
     #    #print(items)
     #    print(f"At {items['count']}, {items['wait']} seconds: {items['size']/items['wait']/1024**2} MB/sec.")

@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 
 import time
-from typing import Annotated, Iterable, Optional
+from typing import Annotated, Optional
 #from asyncio import run as aiorun
 
 import stream
 from pynng import Pull0, Timeout # type: ignore[import-untyped]
 import typer
 
-from .nng import puller, rate_clock, clock0
-
+from .nng import puller
+from .stream_utils import clock
 
 def psana_pull(
         listen: Annotated[
@@ -31,8 +31,7 @@ def psana_pull(
         addr = listen
 
     # TODO: send to file_writer or something instead of len
-    clock = stream.fold(rate_clock, clock0())
-    stats = puller(addr, ndial) >> stream.map(len) >> clock
+    stats = puller(addr, ndial) >> stream.map(len) >> clock()
     # TODO: update tqdm progress meter
     for items in stats >> stream.item[1::10]:
         #print(items)
