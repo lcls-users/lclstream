@@ -1,6 +1,7 @@
 from typing import Tuple, Union
 from collections.abc import Iterator
 import hashlib
+import os
 from pathlib import Path
 import time
 import struct
@@ -49,7 +50,7 @@ def hasher(it : Iterator[bytes], alg='sha256'
         yield x
     yield h.hexdigest()
 
-def hash_file(fname: Path, alg='sha256') -> str:
+def hash_file(fname: Union[str,os.PathLike], alg='sha256') -> str:
     """ Read a file and compute its hash.
     """
     return file_chunks(fname) >> stream.cut[1] \

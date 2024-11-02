@@ -48,7 +48,7 @@ def Hdf5FileWriter(ilist: List[Tensor]) -> bytes:
             for idx, img in enumerate(ilist):
                 dataset[idx] = img
 
-        return f.read()
+        return f.getvalue()
 
 def psana_push(
         experiment: Annotated[

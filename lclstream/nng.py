@@ -1,15 +1,34 @@
-from collections.abc import Iterator
+from typing import TypeVar, Optional
+from collections.abc import Iterator, Callable
+import io
 import time
 import logging
 _logger = logging.getLogger(__name__)
 
 import stream
+import h5py
 from pynng import Push0, Pull0, Timeout, ConnectionRefused # type: ignore[import-untyped]
 
 send_opts : dict[str,int] = {
      #"send_buffer_size": 32 # send blocks if 32 messages queue up
 }
 recv_options = {"recv_timeout": 5000}
+
+T = TypeVar('T')
+def load_h5(buf: bytes, reader: Callable[[h5py.File],T]) -> Optional[T]:
+    """ Simple function to read an hdf5 file from
+    its serialized bytes representation.
+
+    Returns the result of calling `reader(h5file)`
+    or None on error.
+    """
+    try:
+        with io.BytesIO(buf) as f:
+            with h5py.File(f, 'r') as h:
+                return reader(h)
+    except (IOError, OSError):
+        pass
+    return None
 
 @stream.stream
 def pusher(gen : Iterator[bytes], addr : str, ndial : int
