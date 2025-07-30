@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "lclstream"
-version = "0.8.1"
-description = "Image streaming application for psana."
+version = "1.0.0"
+description = "Data streaming client for LCLS and LCLS-II"
 authors = ["Cong Wang <wangimagine@gmail.com>",
            "David M. Rogers <predictivestatmech@gmail.com>",
            "Valerio Mariani <valmar@slac.stanford.edu>"
@@ -10,10 +10,7 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.scripts]
-psana_push = "lclstream.psana_push:run"
-psana_pull = "lclstream.psana_pull:run"
-file_push = "lclstream.file_push:run"
-file_pull = "lclstream.file_pull:run"
+lclstream = "lclstream.lclstream:app"
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -24,10 +21,11 @@ typer = "^0.12.3"
 h5py = "^3.11.0"
 hdf5plugin = "^4.4.0"
 stream = {git = "https://github.com/frobnitzem/stream.py", rev = "v1.0.0"}
-tqdm = "^4.66.6"
+certified = "^1.0.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
+mypy = "^1.17.0"
 
 [build-system]
 requires = ["poetry-core"]

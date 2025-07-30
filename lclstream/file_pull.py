@@ -7,7 +7,6 @@ from pathlib import Path
 #from asyncio import run as aiorun
 
 import stream
-from pynng import Pull0, Timeout # type: ignore[import-untyped]
 import typer
 
 from .nng import puller
