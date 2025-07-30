@@ -92,7 +92,7 @@ def push(names: Annotated[
     """
     
     messages = names >> stream.map(readfile) \
-                     >> display_size \
+                     >> display_sz \
                      >> pusher(addr, ndial) \
                      >> clock()
     # run the stream
@@ -109,7 +109,7 @@ def display_sz(inp: Iterator[bytes]) -> Iterator[bytes]:
     # of stream operators...
     #yield from (inp >> a >> b)
     items = {'count': 0,
-             'wait': 0,
+             'wait': 0.0,
              'size': 0
             }
     t0 = time.time() # to time the wait for input data

@@ -1,4 +1,4 @@
-from typing import TypeVar, Optional
+from typing import TypeVar, Optional, Union
 from collections.abc import Iterator, Callable
 import io
 import time
@@ -6,13 +6,15 @@ import logging
 _logger = logging.getLogger(__name__)
 
 import stream
-import h5py
+import h5py # type: ignore[import-untyped]
 from pynng import Push0, Pull0, Timeout, ConnectionRefused # type: ignore[import-untyped]
 
-send_opts : dict[str,int] = {
+send_opts : dict[str,Union[str,int]] = {
      #"send_buffer_size": 32 # send blocks if 32 messages queue up
 }
-recv_options = {"recv_timeout": 5000}
+recv_options : dict[str,Union[str,int]] = {
+    "recv_timeout": 5000
+}
 
 T = TypeVar('T')
 def load_h5(buf: bytes, reader: Callable[[h5py.File],T]) -> Optional[T]:

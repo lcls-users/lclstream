@@ -22,10 +22,12 @@ h5py = "^3.11.0"
 hdf5plugin = "^4.4.0"
 stream = {git = "https://github.com/frobnitzem/stream.py", rev = "v1.0.0"}
 certified = "^1.0.2"
+pyyaml = "^6.0.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
 mypy = "^1.17.0"
+types-pyyaml = "^6.0.12.20250516"
 
 [build-system]
 requires = ["poetry-core"]

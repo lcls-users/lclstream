@@ -9,16 +9,15 @@ import logging
 _logger = logging.getLogger(__name__)
 
 import stream
-from tqdm import tqdm
 
-@stream.stream
-def chunk_progress(it, sz, desc=None):
-    """ Create a progress-bar to count bytes sent.
-    """
-    with tqdm(desc=desc, total=sz) as pbar:
-        for x in it:
-            yield x
-            pbar.update(len(x)-4)
+#@stream.stream
+#def chunk_progress(it, sz, desc=None):
+#    """ Create a progress-bar to count bytes sent.
+#    """
+#    with tqdm(desc=desc, total=sz) as pbar:
+#        for x in it:
+#            yield x
+#            pbar.update(len(x)-4)
 
 clock0 = lambda: {'count': 0, 'size': 0, 'wait': 0, 'time': time.time()}
 def rate_clock(state, sz):
