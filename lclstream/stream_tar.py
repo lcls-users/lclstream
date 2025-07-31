@@ -8,7 +8,7 @@ import stream
 @stream.sink
 def write_tar(inp: Iterator[bytes], file: Any, names: str
              ) -> None:
-    with tarfile.open(fileobj=file.buffer, mode="w") as tar:
+    with tarfile.open(fileobj=file.buffer, mode="w|") as tar:
         for i, data in enumerate(inp):
             # Create a TarInfo object for the file
             info = tarfile.TarInfo(names % i)
