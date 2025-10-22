@@ -17,7 +17,7 @@ python = "^3.9"
 pynng = "^0.8.0"
 numpy = "^1.20"
 pydantic = ">=2.1"
-typer = "^0.12.3"
+typer = ">=0.16.0"
 h5py = "^3.11.0"
 hdf5plugin = "^4.4.0"
 stream = {git = "https://github.com/frobnitzem/stream.py", rev = "v1.0.0"}

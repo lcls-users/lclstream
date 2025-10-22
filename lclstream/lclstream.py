@@ -98,6 +98,8 @@ def push(names: Annotated[
     # run the stream
     final = messages >> stream.last()
     # {'count': 0, 'size': 0, 'wait': 0, 'time': time.time()}
+    if final['wait'] == 0: # prevent divide by zero exception [sic]
+        final['wait'] = -1
     print(f"Sent {final['count']} messages in {final['wait']} seconds: {final['size']/final['wait']/1024**2} MB/sec.",
           file=sys.stderr
     )
@@ -167,7 +169,7 @@ def get(config: Annotated[
                         base_url = server,
                         headers = headers,
                     ) as cli:
-            resp = await cli.post("/transfers", cfg)
+            resp = await cli.post("/v1/transfers", cfg)
             ok = resp.status_code//100 == 2
             ans = await resp.json()
         return ok, ans
@@ -177,7 +179,7 @@ def get(config: Annotated[
                         base_url = server,
                         headers = headers,
                     ) as cli:
-            await cli.delete(f"/transfers/{tid}")
+            await cli.delete(f"/v1/transfers/{tid}")
 
     ok, ans = asyncio.run(request_data())
 
